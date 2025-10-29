@@ -25,8 +25,8 @@ class Player{
 		this.expenses = Config.miner_wage + game.buildings.count;
 	}
 
-    can_i_go_here(x, y){
-		let delta = this.fetch_delta(this.player_at.x, this.player_at.y, x, y);
+	can_i_go_here(x, y){
+		let delta = game.fetch_delta(this.player_at.x, this.player_at.y, x, y);
 		if (delta.x != 0 && delta.y != 0){
 			return false;
 		}
@@ -34,15 +34,15 @@ class Player{
 		let pos_y = this.player_at.y;
 		let possible_moves = 0;
 		while (true){
-			if (this.are_they_falling(pos_x, pos_y)){
+			if (game.are_they_falling(pos_x, pos_y)){
 				return false;
 			}
 			if (delta.y == -1 && game.buildings.at(pos_x, pos_y) != 'ladder' 
-				&& this.map.grid[pos_x][pos_y - 1] == 'empty' ){
+				&& game.map.grid[pos_x][pos_y - 1] == 'empty' ){
 				return false;
 			}
-			if (this.map.grid[pos_x][pos_y] != "dirt" 
-				&& this.map.grid[pos_x][pos_y] != 'sky' && this.map.grid[pos_x][pos_y] != 'empty'){
+			if (game.map.grid[pos_x][pos_y] != "dirt" 
+				&& game.map.grid[pos_x][pos_y] != 'sky' && game.map.grid[pos_x][pos_y] != 'empty'){
 				possible_moves ++;
 			}
 			if (pos_x == x && pos_y == y){
@@ -58,9 +58,9 @@ class Player{
 	}
 
     dig(x, y){
-		let type = this.map.grid[x][y];
-		this.map.grid[x][y] = 'empty';
-		this.map.falling[x][y] = null;
+		let type = game.map.grid[x][y];
+		game.map.grid[x][y] = 'empty';
+		game.map.falling[x][y] = null;
 		this.money += Config.ore_values[type];
 		this.fall(false);
 		if (type == 'dirt'){
@@ -71,16 +71,16 @@ class Player{
 			this.money -= this.expenses;
 		}
 		if (this.money < 0){
-			this.lose();
+			game.lose();
 		}
 	}
 
     fall(decrement){
 		//check if player falls
 		let new_y = this.player_at.y + 1;
-		let is_tile_below_valid = this.map.is_pos_valid(this.player_at.x, new_y)
-		if (!is_tile_below_valid || game.buildings.at(this.player.x, this.player.y) == 'ladder'
-			||  (is_tile_below_valid && this.map.grid[this.player_at.x][new_y] != 'empty')){
+		let is_tile_below_valid = game.map.is_pos_valid(this.player_at.x, new_y)
+		if (!is_tile_below_valid || game.buildings.at(this.player_at.x, this.player_at.y) == 'ladder'
+			||  (is_tile_below_valid && game.map.grid[this.player_at.x][new_y] != 'empty')){
 			return;
 		}
 		this.player_at.y = new_y;
@@ -104,7 +104,7 @@ class Player{
 	}
 
     go_here(x, y){
-		let delta = this.fetch_delta(this.player_at.x, this.player_at.y, x, y);
+		let delta = game.fetch_delta(this.player_at.x, this.player_at.y, x, y);
 		if (delta.x != 0 && delta.y != 0){
 			return false;
 		}
@@ -137,14 +137,14 @@ class Player{
 		}
 
 		if (this.moves >= Config.max_moves 
-			|| (direction == 'up' && game.buildings.at(this.player.x, this.player.y) == 'ladder')
-			|| !this.map.is_pos_valid(this.player_at.x + delta_x, this.player_at.y + delta_y)){
+			|| (direction == 'up' && game.buildings.at(this.player_at.x, this.player_at.y) == 'ladder')
+			|| !game.map.is_pos_valid(this.player_at.x + delta_x, this.player_at.y + delta_y)){
 			return;
 		}
 		let new_x = this.player_at.x + delta_x;
 		let new_y = this.player_at.y + delta_y;
 		
-		if (this.map.grid[new_x][new_y] == 'sky' || this.map.grid[new_x][new_y] == 'empty'){
+		if (game.map.grid[new_x][new_y] == 'sky' || game.map.grid[new_x][new_y] == 'empty'){
 			this.player_at.x = new_x;
 			this.player_at.y = new_y;
 			this.fall(true);

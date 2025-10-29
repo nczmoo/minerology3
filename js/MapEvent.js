@@ -42,12 +42,12 @@ class MapEvent {
 					continue;
 				}
 				if (this.is_pos_valid(x - 1, y + 1) && this.grid[x - 1][y + 1] == 'empty' 
-					&& game.buildings[x - 1][y + 1] == null){
+					&& game.buildings.at(x - 1, y + 1) == null){
 					this.grid[x][y] = 'empty';
 					this.grid[x - 1][y + 1] = 'dirt';
 					num_collapsed ++;
 				} else if (this.is_pos_valid(x + 1, y + 1) && this.grid[x + 1][y + 1] == 'empty' 
-					&& game.buildings[x + 1][y + 1] == null){
+				&& game.buildings.at(x + 1, y + 1) == null){
 					this.grid[x][y] = 'empty';
 					this.grid[x + 1][y + 1] = 'dirt';
 					num_collapsed ++;
@@ -62,8 +62,8 @@ class MapEvent {
 
 	dirt_falls(){
 		for (let x = 0; x < Config.max_x; x ++){
-			for (let y = 1; y <= Config.max_y; y ++){
-				if ( this.grid[x][y] == "empty" && game.buildings[x][y] == null 
+			for (let y = 1; y < Config.max_y; y ++){
+				if ( this.grid[x][y] == "empty" && game.buildings.at(x,y) == null 
 					&& this.grid[x][y - 1] == "dirt"){
 					this.column_falls(x, y - 1, 'dirt');
 				}
@@ -74,17 +74,17 @@ class MapEvent {
 	explode(){
 		let dynamites = [];
 		for (let pos_x = 0; pos_x < Config.max_x ; pos_x ++){
-			for (let pos_y = 0; pos_y < Config.max_x; pos_y ++){
-				if (!this.map.is_pos_valid(pos_x, pos_y) 
+			for (let pos_y = 0; pos_y < Config.max_y; pos_y ++){
+				if (!this.is_pos_valid(pos_x, pos_y) 
 					|| !game.buildings.is_within_range_of_building(pos_x, pos_y, 1, 'dynamite')){
 					continue;
 				}
 				if (game.buildings.at(pos_x, pos_y) == 'dynamite'){
 					dynamites.push( { x: pos_x, y: pos_y } );
 				}
-				let value = Config.ore_values[this.map.at(pos_x, pos_y)];
-				this.money += value;
-				this.map.grid[pos_x][pos_y] = 'empty';
+				let value = Config.ore_values[this.at(pos_x, pos_y)];
+				game.money += value;
+				this.grid[pos_x][pos_y] = 'empty';
 			}
 		}
 		for (let dynamite of dynamites){
