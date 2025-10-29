@@ -22,7 +22,7 @@ class Input {
 		}
 		if (game.player.build_from == null && can_i_place){
 			game.player.build_from = { x : x, y: y };
-			$("#cell-" + x + "-" + y).addClass('game.player.build_from');
+			$("#cell-" + x + "-" + y).addClass('building_from');
 			return;
 		}
 		this.build(this.game.player.build_from.x, this.game.player.build_from.y, x, y, game.player.buying);
@@ -35,12 +35,16 @@ class Input {
 
 		if (key == "ArrowLeft"){
 			game.player.move ("left");
+			game.player.move ("left");
 		} else if (key == "ArrowRight"){
 			game.player.move ('right');
+			game.player.move ('right');
 		} else if (key == 'ArrowDown'){
+			game.player.move ('down');
 			game.player.move ('down');
 		} else if (key == 'ArrowUp'){
 			game.player.move ('up');			
 		}
 	}
+
 }

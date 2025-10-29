@@ -35,15 +35,15 @@ class Player{
 		let pos_y = this.y;
 		let possible_moves = 0;
 		while (true){
-			if (this.are_they_falling(pos_x, pos_y)){
+			if (game.are_they_falling(pos_x, pos_y)){
 				return false;
 			}
 			if (delta.y == -1 && game.buildings.at(pos_x, pos_y) != 'ladder' 
-				&& this.map.grid[pos_x][pos_y - 1] == 'empty' ){
+				&& game.map.grid[pos_x][pos_y - 1] == 'empty' ){
 				return false;
 			}
-			if (this.map.grid[pos_x][pos_y] != "dirt" 
-				&& this.map.grid[pos_x][pos_y] != 'sky' && this.map.grid[pos_x][pos_y] != 'empty'){
+			if (game.map.grid[pos_x][pos_y] != "dirt" 
+				&& game.map.grid[pos_x][pos_y] != 'sky' && game.map.grid[pos_x][pos_y] != 'empty'){
 				possible_moves ++;
 			}
 			if (pos_x == x && pos_y == y){
@@ -59,9 +59,9 @@ class Player{
 	}
 
     dig(x, y){
-		let type = this.map.grid[x][y];
-		this.map.grid[x][y] = 'empty';
-		this.map.falling[x][y] = null;
+		let type = game.map.grid[x][y];
+		game.map.grid[x][y] = 'empty';
+		game.map.falling[x][y] = null;
 		this.money += Config.ore_values[type];
 		this.fall(false);
 		if (type == 'dirt'){
@@ -72,7 +72,7 @@ class Player{
 			this.money -= this.expenses;
 		}
 		if (this.money < 0){
-			this.lose();
+			game.lose();
 		}
 	}
 

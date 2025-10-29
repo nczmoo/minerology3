@@ -17,8 +17,8 @@ class UI{
 				}
 				if (x == game.player.x && y == game.player.y && game.player.moves < Config.max_moves){
 					html_txt = "O";
-				} else if (game.buildings[x][y] != null){
-					html_txt = Config.building_icons[game.buildings[x][y]];
+				} else if (game.buildings.at(x, y) != null){
+					html_txt = Config.building_icons[game.buildings.at(x, y)];
 				} else if (game.map.falling[x][y] != null){
 					html_txt = game.map.falling[x][y];
 				}
@@ -84,15 +84,16 @@ class UI{
 	highlight_dynamite(x, y){
 		for (let pos_x = x -1; pos_x <= x + 1; pos_x ++){
 			for (let pos_y = y -1; pos_y <= y + 1; pos_y ++){
-				if (!game.map.is_pos_valid(x, y)){
+				if (!game.map.is_pos_valid(pos_x, pos_y)){
 					continue;
 				}
 				$(`#cell-${pos_x}-${pos_y}`).addClass('dynamite-highlight');
-			}	
+			} 	
 		}
 	}
 
 	hover(x, y){
+		let can_i_go_here = game.player.can_i_go_here(x, y);
 		let can_i_go_here = game.player.can_i_go_here(x, y);
 		let can_i_place = game.buildings.can_i_place(x, y, game.buying);
 		//console.log(game.buying, can_i_place, x, y);
@@ -134,7 +135,7 @@ class UI{
 	}
 
 	leave(x, y){
-		if (game.building != null 
+		if (game.buying != null 
 			&& (!$("#cell-" + x + "-" + y).hasClass('empty') || $("#cell-" + x + "-" + y).hasClass('building_from'))){
 			return;
 		}

@@ -62,8 +62,8 @@ class MapEvent {
 
 	dirt_falls(){
 		for (let x = 0; x < Config.max_x; x ++){
-			for (let y = 1; y <= Config.max_y; y ++){
-				if ( this.grid[x][y] == "empty" && game.buildings[x][y] == null 
+			for (let y = 1; y < Config.max_y; y ++){
+				if ( this.grid[x][y] == "empty" && game.buildings.at(x,y) == null 
 					&& this.grid[x][y - 1] == "dirt"){
 					this.column_falls(x, y - 1, 'dirt');
 				}

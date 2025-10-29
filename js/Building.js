@@ -11,8 +11,8 @@ class Building{
 		return this.grid[x][y];
 	}
 
-    build (from_x, from_y, to_x, to_y, what){		
-		let delta = this.fetch_delta(from_x, from_y, to_x, to_y);
+	build (from_x, from_y, to_x, to_y, what){		
+		let delta = game.fetch_delta(from_x, from_y, to_x, to_y);
 		let cost = Config.costs[what];		
 		let pos_x = from_x;
 		let pos_y = from_y;		
@@ -40,12 +40,13 @@ class Building{
 		if (what == 'ladder' && (y == Config.dirt_starts_at || this.map.grid[x][y - 1] != 'empty' 
 			|| (game.map.is_pos_valid(x, y + 1) && this.map.grid[x][y + 1] != 'empty') || y == Config.max_y - 1)){
 				return true;
-		} else if (what == 'shoring' && (!this.are_they_falling(x, y))){
+		} else if (what == 'shoring' && (!game.are_they_falling(x, y))){
 			return true;
 		} else if (what == 'dynamite' && this.map.grid[x][y] != 'empty' && this.map.grid[x][y] != 'sky' 
 			&& game.map.is_it_within_range_of_tile_type(x, y, 2, 'empty', false)){
 			return true;
 		}
+		console.log(game.map.is_it_within_range_of_tile_type(x, y, 2, 'empty', false));
 		console.log(game.map.is_it_within_range_of_tile_type(x, y, 2, 'empty', false));
 		return false;
 	}
@@ -53,6 +54,7 @@ class Building{
     is_within_range_of_building(x, y, range, building){
 		for (let pos_x = x - range; pos_x <= x + range; pos_x ++){
 			for (let pos_y = y - range; pos_y <= y + range; pos_y ++){
+				if (!game.map.is_pos_valid(pos_x, pos_y)){
 				if (!game.map.is_pos_valid(pos_x, pos_y)){
 					continue;
 				}
