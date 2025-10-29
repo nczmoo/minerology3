@@ -12,6 +12,9 @@
 			margin: 0px;
 			padding: 0px;
 		}
+		.buying{
+			background-color: green
+		}
 		.cell {
 			width: 20px;
 			height: 20px;
@@ -23,8 +26,11 @@
 			font-size: 20px;
 			line-height: 20px;
 		}
-
-		.cell:not(.sky){
+		.cell.dynamite-highlight, .cell.pending_destruction {
+			border: 1px solid red;
+			 box-shadow: 0 0 20px 10px red;
+		}
+		.cell:not(.sky, .empty, .dynamite-highlight){
 			border: 1px solid black;
 		}
 		.cell.sky, .cell.empty{
@@ -36,7 +42,7 @@
 		.dirt{
 			background-color: burlywood;
 		}
-		.empty{
+		.empty:not(.buying){
 			background-color: black;
 			color: white;
 		}
@@ -64,11 +70,19 @@
 <body>
 	<div id="map"></div>
 	<div>
-		Money: $<span id="money">0</span><br>
-		Moves left: <span id="moves_left">0</span><br>		
-		Day: <span id="day">0</span><br>
+		Day: <span id="day">0</span>
+		Moves left: <span id="moves_left">0</span>
+		Money: $<span id="money">0</span> 
+		<span id="money_stats">
+			[<span id="balance">0</span>] 
+			<span id='expense_label'>(-<span id='expenses'>0</span>)</span>
+		</span>
+		
+		
 	</div>
-	<div>
+	<div id="buy_menu">
+		
+	</div><div>
 		<button id="next" disabled>next day</button>
 	</div>
 
