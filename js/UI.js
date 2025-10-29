@@ -15,7 +15,7 @@ class UI{
 					tile_modifier = 'pending_destruction';
 
 				}
-				if (x == game.player_at.x && y == game.player_at.y && game.moves < Config.max_moves){
+				if (x == game.player.x && y == game.player.y && game.player.moves < Config.max_moves){
 					html_txt = "O";
 				} else if (game.buildings[x][y] != null){
 					html_txt = Config.building_icons[game.buildings[x][y]];
@@ -43,7 +43,7 @@ class UI{
 		let htmlTxt = '';
 		for (let [what, cost] of Object.entries(Config.costs)){
 			let disabledTxt = "disabled";
-			if (game.money >= cost && game.moves >= Config.max_moves){
+			if (game.player.money >= cost && game.player.moves >= Config.max_moves){
 				disabledTxt = '';
 			}
 			htmlTxt += `<button id='buy-${what}' class='buy' ${disabledTxt}>
@@ -54,7 +54,7 @@ class UI{
 
 	highlight(x, y){
 		let cost = Config.costs[game.buying];
-		let max_i = Math.floor(game.money / cost);
+		let max_i = Math.floor(game.player.money / cost);
 		let delta = game.fetch_delta(game.player.build_from.x, game.player.build_from.y, x, y);
 		
 		if ((delta.x == 0 && delta.y == 0) || (delta.x != 0 && delta.y != 0)){
@@ -93,16 +93,16 @@ class UI{
 	}
 
 	hover(x, y){
-		let can_i_go_here = game.can_i_go_here(x, y);
+		let can_i_go_here = game.player.can_i_go_here(x, y);
 		let can_i_place = game.buildings.can_i_place(x, y, game.buying);
 		//console.log(game.buying, can_i_place, x, y);
 		/*
-		console.log((game.buying == null && x != game.player_at.x && game.player_at.y != y), 
+		console.log((game.buying == null && x != game.player.x && game.player.y != y), 
 			(game.buying == null && !can_i_go_here),
 			(game.buying != null && game.buying != 'dynamite' && !$("#cell-" + x + "-" + y).hasClass('empty')),
 			(game.buying != null && game.player.build_from == null && !can_i_place))
 			*/
-		if ((game.buying == null && x != game.player_at.x && game.player_at.y != y) 
+		if ((game.buying == null && x != game.player.x && game.player.y != y) 
 			|| (game.buying == null && !can_i_go_here)
 			|| (game.buying != null && game.buying != 'dynamite' && !$("#cell-" + x + "-" + y).hasClass('empty'))
 			|| (game.buying != null && game.player.build_from == null && !can_i_place)){
@@ -139,7 +139,7 @@ class UI{
 			return;
 		}
 		$("#cell-" + x + "-" + y).removeClass('buying');
-		if ((game.player_at.x == x && game.player_at.y == y) || game.buildings[x][y] != null){			
+		if ((game.player.x == x && game.player.y == y) || game.buildings[x][y] != null){			
 			return;
 		}		
 		$("#cell-" + x + "-" + y).html('');
@@ -149,20 +149,20 @@ class UI{
 	refresh(){
 		this.generate_buy_menu();
 		this.display_map();
-		let balance = game.money - game.expenses;
+		let balance = game.player.money - game.player.expenses;
 		$("#balance").css('color', 'black');
 		if (balance < 0){
 			$("#balance").css('color', 'red');
 		}
 		$("#balance").html(balance);
-		$("#expenses").html(game.expenses);
-		$("#money").html(game.money);
-		$("#moves_left").html(Config.max_moves - game.moves);	
+		$("#expenses").html(game.player.expenses);
+		$("#money").html(game.player.money);
+		$("#moves_left").html(Config.max_moves - game.player.moves);	
 		$("#day").html(game.day);
-		if (game.moves >= Config.max_moves){
+		if (game.player.moves >= Config.max_moves){
 			$("#next").prop('disabled', false);
 			$("#money_stats").css('visibility', 'hidden');
-		} else if (game.moves == 0){
+		} else if (game.player.moves == 0){
 			$("#next").prop('disabled', true);
 			$(".buy").prop('disabled', true);
 			$("#money_stats").css('visibility', 'visible');

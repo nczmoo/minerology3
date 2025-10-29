@@ -2,6 +2,7 @@ class Game{
 	loop = new Loop();
 	buildings = new Building();
 	day = 1;
+	input = new Input();
 	map = new Map();
 	
 	constructor(){
@@ -44,15 +45,11 @@ class Game{
 	}
 
 	next_day(){
-		this.explode();
-		this.calculate_expenses();
-		this.map.dirt_falls();
-		this.map.dirt_collapses();
-		this.map.check_gravity();
-		this.player_at.x = Config.start_x;
-		this.player_at.y = Config.start_y;
-		this.fall(false);
-		this.moves = 0;
+		game.player.next_day();
+		
+		this.map.event.go();
+		
+		
 		this.day ++;
 	}
 

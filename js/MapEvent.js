@@ -7,7 +7,7 @@ class MapEvent {
 					continue;
 				}
 				if (this.falling[x][y] != null){
-					this.tile_falls(x, y);
+					game.map.tile.falls(x, y);
 					continue;
 				}
 				if (this.grid[x][y + 1] == 'empty'){
@@ -22,13 +22,13 @@ class MapEvent {
 	
 
     column_falls(base_x, base_y, type){
-			let top_tile_y = this.fetch_top_tile_y(base_x, base_y, type);
-			if (!this.is_pos_valid(base_x, base_y + 1)){
+			let top_tile_y = game.map.tile.fetch_top_y(base_x, base_y, type);
+			if (!game.map.is_pos_valid(base_x, base_y + 1)){
 				return;
 			}
 			this.grid[base_x][top_tile_y] = 'empty';
 			this.grid[base_x][base_y + 1] = type;
-			if (this.is_pos_valid(base_x, base_y + 2) && this.grid[base_x][base_y + 2] == 'empty'){
+			if (game.map.is_pos_valid(base_x, base_y + 2) && this.grid[base_x][base_y + 2] == 'empty'){
 				this.column_falls(base_x, base_y + 1, type);
 			}
 
@@ -41,12 +41,12 @@ class MapEvent {
 				if (this.grid[x][y] != 'dirt'){
 					continue;
 				}
-				if (this.is_pos_valid(x - 1, y + 1) && this.grid[x - 1][y + 1] == 'empty' 
+				if (game.map.is_pos_valid(x - 1, y + 1) && this.grid[x - 1][y + 1] == 'empty' 
 					&& game.buildings[x - 1][y + 1] == null){
 					this.grid[x][y] = 'empty';
 					this.grid[x - 1][y + 1] = 'dirt';
 					num_collapsed ++;
-				} else if (this.is_pos_valid(x + 1, y + 1) && this.grid[x + 1][y + 1] == 'empty' 
+				} else if (game.map.is_pos_valid(x + 1, y + 1) && this.grid[x + 1][y + 1] == 'empty' 
 					&& game.buildings[x + 1][y + 1] == null){
 					this.grid[x][y] = 'empty';
 					this.grid[x + 1][y + 1] = 'dirt';
@@ -75,20 +75,26 @@ class MapEvent {
 		let dynamites = [];
 		for (let pos_x = 0; pos_x < Config.max_x ; pos_x ++){
 			for (let pos_y = 0; pos_y < Config.max_x; pos_y ++){
-				if (!this.map.is_pos_valid(pos_x, pos_y) 
+				if (!game.map.is_pos_valid(pos_x, pos_y) 
 					|| !game.buildings.is_within_range_of_building(pos_x, pos_y, 1, 'dynamite')){
 					continue;
 				}
 				if (game.buildings.at(pos_x, pos_y) == 'dynamite'){
 					dynamites.push( { x: pos_x, y: pos_y } );
 				}
-				let value = Config.ore_values[this.map.at(pos_x, pos_y)];
-				this.money += value;
+				let value = Config.ore_values[game.map.at(pos_x, pos_y)];
+				game.player.money += value;
 				this.map.grid[pos_x][pos_y] = 'empty';
 			}
 		}
 		for (let dynamite of dynamites){
 			game.buildings.grid[dynamite.x][dynamite.y] = null;
 		}
+	}
+	go(){
+		this.explode();
+		this.dirt_falls();
+		this.dirt_collapses();
+		this.check_gravity();
 	}
 }

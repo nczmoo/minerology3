@@ -1,9 +1,9 @@
 class MapGenerator {
 
-    	generate_map(){
+    generate(){
 		for (let x = 0; x < Config.max_x; x ++){
 			for (let y = 0; y < Config.max_y; y ++){
-				this.grid[x][y] = this.create_tile(x, y);
+				game.map.grid[x][y] = game.map.tile.create(x, y);
 			}
 		}
 		this.seed_map();
@@ -16,19 +16,20 @@ class MapGenerator {
 		if (!does_it_grow){
 			return false;
 		}
-		let adjacent = this.fetch_adjacent_tile(x, y, 'stone');
+		let adjacent = game.map.tile.fetch_adjacent(x, y, 'stone');
 		if (adjacent == null){
 			return false;
 		}
-		this.grid[adjacent.x][adjacent.y] = type;
+		game.map.grid[adjacent.x][adjacent.y] = type;
 		this.grow_ore(type, x, y);
 	}
-        seed_all_ores(type, num_of_ores){
+	
+    seed_all_ores(type, num_of_ores){
 		let min_y = {gold: Math.round(Config.max_y / 2), coal: 4, iron: 4};
 		for (let n = 0; n < num_of_ores; n ++){
 			let x = fetch_rand(0, Config.max_x - 1);
 			let y = fetch_rand(min_y[type], Config.max_y - 1)
-			this.grid[x][y] = type;
+			game.map.grid[x][y] = type;
 			this.grow_ore(type, x, y);
 		}
 	}

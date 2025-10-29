@@ -1,5 +1,5 @@
 class Tile{
-    create_tile(x, y){
+    create(x, y){
 		if (y < Config.dirt_starts_at ) {
 			return 'sky';
 		} else if (y < 6 || (y >= 6 && this.grid[x][y-1] == 'dirt' && fetch_rand(1, 2) == 1)){
@@ -19,12 +19,12 @@ class Tile{
 		}
 	}
 
-    fetch_adjacent_tile(x, y, type){
+    fetch_adjacent(x, y, type){
 		//orthogonal
 		let relevant = [];
 		for (let pos_x = x - 1; pos_x <= x + 1; pos_x ++){
 			for (let pos_y = y - 1; pos_y <= y + 1; pos_y ++){	
-				if (!this.is_pos_valid(pos_x, pos_y) || (pos_x == x && pos_y == y) || (pos_x != x && pos_y != y)){
+				if (!game.map.is_pos_valid(pos_x, pos_y) || (pos_x == x && pos_y == y) || (pos_x != x && pos_y != y)){
 					continue;
 				}
 				if (this.grid[pos_x][pos_y] == type){
@@ -38,11 +38,11 @@ class Tile{
 		return relevant[fetch_rand(0, relevant.length - 1)];
 	}
 
-    tile_falls(x, y){
+    falls(x, y){
 		this.falling[x][y] --;
 		if(this.falling[x][y] < 1){
 			this.falling[x][y] = null;
-			this.column_falls(x, y, this.grid[x][y]);
+			game.map.event.column_falls(x, y, this.grid[x][y]);
 		}
 	}
 }

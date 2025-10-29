@@ -1,6 +1,9 @@
 class Map {
+	event = new MapEvent();
 	falling = [];
+	generator = new MapGenerator();
 	grid = [];
+	tile = new Tile();
     constructor(){
         this.grid = Array.from({ length: Config.max_x }, 
 			() => Array.from({ length: Config.max_y }, 
@@ -8,7 +11,7 @@ class Map {
 		this.falling = Array.from({ length: Config.max_x }, 
 			() => Array.from({ length: Config.max_y }, 
 				() => null) );
-		this.generate_map();
+		this.generator.generate();
     }
 	
 	at (x, y){

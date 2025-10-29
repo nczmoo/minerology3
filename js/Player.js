@@ -1,7 +1,8 @@
 class Player{
    	buying = null;
 	expenses = 0;
-    player_at = {x: Config.start_x, y: Config.start_y};
+    x = Config.start_x; 
+	y = Config.start_y;
 	money = 2000;	
 	moves = 0;
 	constructor(){
@@ -26,12 +27,12 @@ class Player{
 	}
 
     can_i_go_here(x, y){
-		let delta = this.fetch_delta(this.player_at.x, this.player_at.y, x, y);
+		let delta = this.fetch_delta(this.x, this.y, x, y);
 		if (delta.x != 0 && delta.y != 0){
 			return false;
 		}
-		let pos_x = this.player_at.x;
-		let pos_y = this.player_at.y;
+		let pos_x = this.x;
+		let pos_y = this.y;
 		let possible_moves = 0;
 		while (true){
 			if (this.are_they_falling(pos_x, pos_y)){
@@ -77,13 +78,13 @@ class Player{
 
     fall(decrement){
 		//check if player falls
-		let new_y = this.player_at.y + 1;
-		let is_tile_below_valid = this.map.is_pos_valid(this.player_at.x, new_y)
+		let new_y = this.y + 1;
+		let is_tile_below_valid = game.map.is_pos_valid(this.x, new_y)
 		if (!is_tile_below_valid || game.buildings.at(this.player.x, this.player.y) == 'ladder'
-			||  (is_tile_below_valid && this.map.grid[this.player_at.x][new_y] != 'empty')){
+			||  (is_tile_below_valid && this.map.grid[this.x][new_y] != 'empty')){
 			return;
 		}
-		this.player_at.y = new_y;
+		this.y = new_y;
 		if (decrement){
 			this.moves ++;
 		}
@@ -104,17 +105,17 @@ class Player{
 	}
 
     go_here(x, y){
-		let delta = this.fetch_delta(this.player_at.x, this.player_at.y, x, y);
+		let delta = this.fetch_delta(this.x, this.y, x, y);
 		if (delta.x != 0 && delta.y != 0){
 			return false;
 		}
 		let direction = this.fetch_direction(delta);
-		let pos_x = this.player_at.x;
-		let pos_y = this.player_at.y;
+		let pos_x = this.x;
+		let pos_y = this.y;
 		while (true) {
 			this.move(direction);
-			if (pos_x == this.player_at.x && pos_y == this.player_at.y && direction == 'up'
-				|| (this.player_at.x == x && this.player_at.y == y)
+			if (pos_x == this.x && pos_y == this.y && direction == 'up'
+				|| (this.x == x && this.y == y)
 				|| this.moves >= Config.max_moves){
 				break;
 			}
@@ -138,18 +139,26 @@ class Player{
 
 		if (this.moves >= Config.max_moves 
 			|| (direction == 'up' && game.buildings.at(this.player.x, this.player.y) == 'ladder')
-			|| !this.map.is_pos_valid(this.player_at.x + delta_x, this.player_at.y + delta_y)){
+			|| !game.map.is_pos_valid(this.x + delta_x, this.y + delta_y)){
 			return;
 		}
-		let new_x = this.player_at.x + delta_x;
-		let new_y = this.player_at.y + delta_y;
+		let new_x = this.x + delta_x;
+		let new_y = this.y + delta_y;
 		
 		if (this.map.grid[new_x][new_y] == 'sky' || this.map.grid[new_x][new_y] == 'empty'){
-			this.player_at.x = new_x;
-			this.player_at.y = new_y;
+			this.x = new_x;
+			this.y = new_y;
 			this.fall(true);
 			return;
 		}
 		this.dig(new_x, new_y);
+	}
+
+	next_day(){
+		this.calculate_expenses();
+		this.x = Config.start_x;
+		this.y = Config.start_y;
+		this.fall(false);
+		this.moves = 0;
 	}
 }

@@ -1,16 +1,16 @@
 $(document).on('click', '.cell', function(e){
 	let x = Number(e.target.id.split('-')[1]);
 	let y = Number(e.target.id.split('-')[2]);
-	game.click(x, y);
+	game.input.click(x, y);
 
 })
 $(document).on('click', '.buy', function(e){
-	game.buy(e.target.id.split('-')[1]);
+	game.player.buy(e.target.id.split('-')[1]);
 })
 
 
 $(document).on('keydown', 'body', function(e){
-	game.input(e.key);
+	game.input.type(e.key);
 	ui.refresh();
 
 })
